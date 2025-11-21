@@ -9,9 +9,9 @@ const path = require('path');
  */
 const config = {
   resolver: {
-    unstable_enableSymlinks: true, // this enable the use of Symlinks
+    unstable_enableSymlinks: true,
+    unstable_enablePackageExports: true,
   },
-  // this specifies the folder where are located the node_modules for the project
   watchFolders: [path.join(__dirname, '..', '..')],
 };
 
