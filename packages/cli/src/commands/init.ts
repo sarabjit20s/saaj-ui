@@ -1,189 +1,309 @@
+import z from 'zod';
 import { Command } from 'commander';
-import chalk from 'chalk';
-import fs from 'fs';
-import yoctoSpinner from 'yocto-spinner';
-import { input } from '@inquirer/prompts';
+import path from 'path';
+import prompts from 'prompts';
+import fs from 'fs-extra';
+import plist from 'plist';
 
-import { install } from '@/src/utils/install';
-import { addRegistryItems, fetchRegistryItems } from '@/src/utils/registry';
+import { COLORS } from '@/src/registry/constants';
+import { logger } from '@/src/utils/logger';
+import { handleError } from '@/src/utils/handle-error';
+import { preFlightInit } from '@/src/preflights/preflight-init';
+import { highlighter } from '@/src/utils/highlighter';
 import {
-  DEFAULT_HOOKS_DIR_PATH,
-  DEFAULT_STYLES_DIR_PATH,
-  DEFAULT_TYPES_DIR_PATH,
-  DEFAULT_COMPONENTS_DIR_PATH,
-  DEFAULT_UTILS_DIR_PATH,
-  ProjectConfig,
-  PROJECT_CONFIG_SCHEMA_URL,
-  PROJECT_CONFIG_FILE_PATH,
-  getProjectConfig,
-  isValidProjectConfig,
-} from '@/src/utils/get-project-config';
-import { isPackageJsonExists } from '@/src/utils/get-package-json';
+  DEFAULT_COMPONENTS_ALIAS,
+  DEFAULT_PRIMARY_COLOR,
+  DEFAULT_SCHEMA_URL,
+  DEFAULT_UTILS_ALIAS,
+  resolveConfigPaths,
+  type Config,
+} from '@/src/utils/get-config';
+import { rawConfigSchema } from '@/src/registry/schema';
+import { spinner } from '@/src/utils/spinner';
+import { initializeStyles } from '@/src/utils/initialize-styles';
+import { addPluginsToBabelConfig } from '@/src/utils/updaters/update-babel-config';
+import { installDependenciesWithPackageManager } from '@/src/utils/install-dependencies';
+import { getPackageManager } from '@/src/utils/get-package-manager';
+import { ProjectInfo } from '@/src/utils/get-project-info';
+import { addComponents } from '@/src/utils/add-components';
+import { updateMainEntryFile } from '@/src/utils/updaters/update-main-entry-file';
 
-const PROJECT_DEPENDENCIES = ['react-native-unistyles', '@radix-ui/colors'];
+export const initOptionsSchema = z.object({
+  cwd: z.string(),
+  name: z.string().optional(),
+  components: z.array(z.string()).optional(),
+  yes: z.boolean(),
+  defaults: z.boolean(),
+  force: z.boolean(),
+  silent: z.boolean(),
+  primaryColor: z
+    .string()
+    .optional()
+    .refine(
+      (val) => {
+        if (val) {
+          return COLORS.find((color) => color.name === val);
+        }
+
+        return true;
+      },
+      {
+        message: `Invalid color. Please use '${COLORS.map(
+          (color) => color.name,
+        ).join("', '")}'`,
+      },
+    ),
+});
 
 export const init = new Command()
   .name('init')
-  .description('initialize project setup and install dependencies')
-  .action(async () => {
+  .description('initialize your project and install dependencies')
+  .argument('[components...]', 'names of components to add')
+  .option(
+    '-p, --primary-color <primary-color>',
+    `the primary color to use. (${COLORS.map((color) => color.name).join(', ')})`,
+    undefined,
+  )
+  .option('-y, --yes', 'skip confirmation prompt.', true)
+  .option('-d, --defaults,', 'use default configuration.', false)
+  .option('-f, --force', 'force overwrite of existing configuration.', false)
+  .option(
+    '-c, --cwd <cwd>',
+    'the working directory. defaults to the current directory.',
+    process.cwd(),
+  )
+  .option('-s, --silent', 'mute output.', false)
+  .action(async (components, opts) => {
     try {
-      await runInit();
+      // Apply defaults when --defaults flag is set.
+      if (opts.defaults) {
+        opts.primaryColor = opts.primaryColor || DEFAULT_PRIMARY_COLOR;
+      }
+
+      const options = initOptionsSchema.parse({
+        ...opts,
+        components,
+        cwd: path.resolve(opts.cwd),
+      });
+
+      await runInit(options);
     } catch (error) {
-      console.error(error);
-      process.exit(1);
+      handleError(error);
     }
   });
 
-export async function runInit() {
-  // check if package.json file exists or not
-  if (!isPackageJsonExists()) {
-    console.error(
-      `No ${chalk.yellow('package.json')} file, please create a react-native project first and then run ${chalk.cyan('init')}.`,
-    );
-    process.exit(1);
-  }
+export async function runInit(options: z.infer<typeof initOptionsSchema>) {
+  const { projectInfo } = await preFlightInit(options);
 
-  // create project config
-  await promptProjectConfig();
+  const answers = await promptForConfig(options);
 
-  // install dependencies
-  const depsSpinner = yoctoSpinner({
-    text: 'Installing dependencies...',
-  }).start();
-  await install(...PROJECT_DEPENDENCIES);
-  depsSpinner.success();
-
-  // configure types
-  await configureTypes();
-
-  // configure styles
-  await configureStyles();
-
-  // configure utils
-  await configureUtils();
-
-  // configure hooks
-  await configureHooks();
-
-  console.log(
-    `${chalk.green('Success!')} Setup completed. You may now add components.`,
-  );
-}
-
-export async function promptProjectConfig(): Promise<ProjectConfig> {
-  if (fs.existsSync(PROJECT_CONFIG_FILE_PATH)) {
-    const projectConfig = getProjectConfig();
-
-    // validate project config
-    if (!isValidProjectConfig(projectConfig)) {
-      console.error(
-        `Invalid ${chalk.yellow('components.json')} file found. To start over, remove ${chalk.yellow('components.json')} file and run ${chalk.cyan('init')} again.`,
-      );
-      process.exit(1);
-    } else {
-      console.log(`Valid ${chalk.cyan('components.json')} file found.`);
-
-      // @ts-ignore we know if a `components.json` file exists, then config can't be null after validation
-      return projectConfig;
-    }
-  }
-  // path for `components` dir
-  const components = await input({
-    message: `Where would you like to keep your ${chalk.cyan('components')}?`,
-    default: DEFAULT_COMPONENTS_DIR_PATH,
-  });
-
-  // path for `hooks` dir
-  const hooks = await input({
-    message: `Where would you like to keep your ${chalk.cyan('hooks')}?`,
-    default: DEFAULT_HOOKS_DIR_PATH,
-  });
-
-  // path for `utils` dir
-  const utils = await input({
-    message: `Where would you like to keep your ${chalk.cyan('utils')}?`,
-    default: DEFAULT_UTILS_DIR_PATH,
-  });
-
-  // path for `styles` dir
-  const styles = await input({
-    message: `Where would you like to keep your ${chalk.cyan('themes configuration')}?`,
-    default: DEFAULT_STYLES_DIR_PATH,
-  });
-
-  // path for `types` dir
-  const types = await input({
-    message: `Where would you like to keep your ${chalk.cyan('types')}?`,
-    default: DEFAULT_TYPES_DIR_PATH,
-  });
-
-  const config: ProjectConfig = {
-    $schema: PROJECT_CONFIG_SCHEMA_URL,
-    dirs: {
-      components,
-      hooks,
-      styles,
-      types,
-      utils,
+  const rawConfig: z.infer<typeof rawConfigSchema> = {
+    $schema: DEFAULT_SCHEMA_URL,
+    aliases: {
+      components: answers.components,
+      utils: answers.utils,
+      ui: answers.components.replace(/\/components$/, '/components/ui'),
+      hooks: answers.components.replace(/\/components$/, '/hooks'),
+      styles: answers.components.replace(/\/components$/, '/styles'),
     },
   };
 
-  fs.writeFileSync(PROJECT_CONFIG_FILE_PATH, JSON.stringify(config, null, 2));
-  return config;
+  const componentSpinner = spinner(`Writing components.json.`)?.start();
+
+  // Write components.json
+  await fs.writeFile(
+    path.join(options.cwd, 'components.json'),
+    JSON.stringify(rawConfig, null, 2),
+  );
+
+  componentSpinner?.success();
+
+  const fullConfig = await resolveConfigPaths(options.cwd, rawConfig);
+
+  // Initialize styles
+  const stylesSpinner = spinner(`Initializing styles.`)?.start();
+  await initializeStyles(
+    answers.primaryColor as (typeof COLORS)[number]['name'],
+    fullConfig,
+  );
+  stylesSpinner?.success();
+
+  // Add plugins to babel config
+  const babelSpinner = spinner(`Adding plugins to babel.config.js.`)?.start();
+  await addPluginsToBabelConfig(projectInfo, fullConfig);
+  babelSpinner?.success();
+
+  // Update main entry file (e.g. App.tsx or index.js) to include unistyles import
+  const entryFileSpinner = spinner(`Updating main entry file.`)?.start();
+
+  const entryFilename = await updateMainEntryFile(fullConfig);
+
+  if (entryFilename) {
+    entryFileSpinner?.success(`Added unistyles import to ${entryFilename}.`);
+  } else {
+    entryFileSpinner?.info(
+      `No main entry file found. Please add ${highlighter.info(`'${fullConfig.aliases.styles}/unistyles'`)} to your main entry file (e.g. App.tsx or index.js).`,
+    );
+  }
+
+  // Install depenencies
+  const installSpinner = spinner(`Installing dependencies.`)?.start();
+  await installDependencies(fullConfig.resolvedPaths.cwd);
+  installSpinner?.success();
+
+  await updateIconFontsList(projectInfo, options.cwd);
+
+  const components = [...(options.components ?? [])];
+
+  if (components.length) {
+    await addComponents(Array.from(new Set(components)), fullConfig, {
+      // Init will always overwrite files.
+      overwrite: true,
+      silent: options.silent,
+    });
+  }
+
+  await printNextSteps(projectInfo, fullConfig);
+
+  return fullConfig;
 }
 
-export async function configureTypes() {
-  const spinner = yoctoSpinner({
-    text: 'Configuring types...',
-  }).start();
+async function promptForConfig(options: z.infer<typeof initOptionsSchema>) {
+  let primaryColor = options.primaryColor || DEFAULT_PRIMARY_COLOR;
+  let components = DEFAULT_COMPONENTS_ALIAS;
+  let utils = DEFAULT_UTILS_ALIAS;
 
-  // we can even pass a file name without extension
-  const files = ['components.ts'];
-  const items = await fetchRegistryItems(files, 'type');
+  if (!options.defaults) {
+    const answers = await prompts([
+      {
+        type: 'select',
+        name: 'primaryColor',
+        message: `Which color would you like to use as the ${highlighter.info(
+          'primary color',
+        )}?`,
+        choices: COLORS.map((color) => ({
+          title: color.label,
+          value: color.name,
+        })),
+      },
+      {
+        type: 'text',
+        name: 'components',
+        message: `Configure the import alias for ${highlighter.info('components')}:`,
+        initial: components,
+      },
+      {
+        type: 'text',
+        name: 'utils',
+        message: `Configure the import alias for ${highlighter.info('utils')}:`,
+        initial: utils,
+      },
+    ]);
 
-  await addRegistryItems(items);
+    primaryColor = answers.primaryColor;
+    components = answers.components;
+    utils = answers.utils;
+  }
 
-  spinner.success();
+  return {
+    primaryColor,
+    components,
+    utils,
+  };
 }
 
-export async function configureStyles() {
-  const spinner = yoctoSpinner({
-    text: 'Configuring styles...',
-  }).start();
+async function installDependencies(cwd: string) {
+  const dependencies = [
+    'react-native-unistyles',
+    'react-native-nitro-modules',
+    'react-native-edge-to-edge',
+    'react-native-reanimated',
+    'react-native-worklets',
+    '@react-native-vector-icons/lucide',
+  ];
+  const devDependencies = ['babel-plugin-module-resolver'];
 
-  // these are the required files to setup themes and unistyles
-  const files = ['tokens.ts', 'themes.ts', 'unistyles.ts'];
-  const items = await fetchRegistryItems(files, 'style');
+  const pm = await getPackageManager();
 
-  await addRegistryItems(items);
-
-  spinner.success();
+  await installDependenciesWithPackageManager({
+    packageManager: pm,
+    dependencies,
+    devDependencies: devDependencies,
+    cwd,
+  });
 }
 
-export async function configureUtils() {
-  const spinner = yoctoSpinner({
-    text: 'Configuring utils...',
-  }).start();
+async function updateIconFontsList(projectInfo: ProjectInfo, cwd: string) {
+  // Add Lucide icon font name to the ios/{AppName}/Info.plist file.
+  if (projectInfo.framework.name === 'react-native') {
+    // Get AppName dir name
+    const iosDirFiles = await fs.readdir(path.join(cwd, 'ios'));
+    const appNameDir = iosDirFiles.find((file) => file.endsWith('.xcodeproj'));
+    const appName = appNameDir?.replace('.xcodeproj', '');
 
-  // these are the required utils
-  const files = ['composeRefs.ts', 'genericForwardRef.ts'];
-  const items = await fetchRegistryItems(files, 'utility');
+    if (appName) {
+      const infoPlistPath = path.join(cwd, 'ios', appName, 'Info.plist');
+      const xml = await fs.readFile(infoPlistPath, 'utf-8');
+      const jsonObj = plist.parse(xml) as any;
 
-  await addRegistryItems(items);
+      if (jsonObj?.UIAppFonts && Array.isArray(jsonObj.UIAppFonts)) {
+        const exists = jsonObj.UIAppFonts.includes('Lucide.ttf');
+        if (!exists) {
+          jsonObj.UIAppFonts.push('Lucide.ttf');
+        }
+      } else {
+        jsonObj.UIAppFonts = ['Lucide.ttf'];
+      }
 
-  spinner.success();
+      const newXml = plist.build(jsonObj);
+      await fs.writeFile(infoPlistPath, newXml);
+    } else {
+      logger.warn(
+        `Unable to modify ${highlighter.info(
+          'ios/{AppName}/Info.plist',
+        )} file. Please add the ${highlighter.info('Lucide.ttf')} value to the ${highlighter.info('UIAppFonts')} key manually.`,
+      );
+    }
+  }
 }
 
-export async function configureHooks() {
-  const spinner = yoctoSpinner({
-    text: 'Configuring hooks...',
-  }).start();
+async function printNextSteps(projectInfo: ProjectInfo, config: Config) {
+  logger.break();
+  logger.log(`Next steps:`);
 
-  // these are the required hooks
-  const files = ['useControllableState.ts'];
-  const items = await fetchRegistryItems(files, 'hook');
+  if (projectInfo.framework.name === 'react-native') {
+    logger.log(
+      `• Restart Metro with cache reset:\n  ${highlighter.info(
+        '`npx react-native start --reset-cache`',
+      )}`,
+    );
+    logger.log(
+      `• Build and launch the app:\n  ${highlighter.info(
+        '`npx react-native run-ios`',
+      )} or ${highlighter.info('`npx react-native run-android`')}`,
+    );
+  } else if (projectInfo.framework.name === 'expo') {
+    const nativeDirsExists =
+      (await fs.pathExists(path.join(config.resolvedPaths.cwd, 'android'))) ||
+      (await fs.pathExists(path.join(config.resolvedPaths.cwd, 'ios')));
 
-  await addRegistryItems(items);
-
-  spinner.success();
+    logger.log(
+      `• Generate native project files ${
+        nativeDirsExists ? '(using existing native folders)' : '(fresh setup)'
+      }:\n  ${highlighter.info(
+        nativeDirsExists
+          ? '`npx expo prebuild`'
+          : '`npx expo prebuild --clean`',
+      )}`,
+    );
+    logger.log(
+      `• Build and launch the app:\n  ${highlighter.info(
+        '`npx expo run:ios`',
+      )} or ${highlighter.info('`npx expo run:android`')}`,
+    );
+  }
+  logger.break();
+  logger.log('You can now start adding components:');
+  logger.log(`  ${highlighter.info('`saaj add button`')}`);
+  logger.break();
 }

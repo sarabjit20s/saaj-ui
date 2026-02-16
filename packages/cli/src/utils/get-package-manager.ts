@@ -1,7 +1,7 @@
-import { detect } from 'package-manager-detector';
+import { detect } from 'package-manager-detector/detect';
 
 export async function getPackageManager() {
-  const detectResult = await detect();
+  const pm = await detect();
 
-  return detectResult?.name ?? 'npm';
+  return pm?.name ?? 'npm';
 }

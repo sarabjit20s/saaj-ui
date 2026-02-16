@@ -6,6 +6,8 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
+    "noUnusedLocals": true,
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./*"]
     }

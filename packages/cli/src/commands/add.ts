@@ -1,79 +1,101 @@
 import { Command } from 'commander';
-import chalk from 'chalk';
-import { RegistryItemType } from '@saaj-ui/registry';
+import z from 'zod';
+import path from 'path';
+import prompts from 'prompts';
 
-import {
-  getProjectConfig,
-  isValidProjectConfig,
-} from '../utils/get-project-config';
-import { addRegistryItems, fetchRegistryItems } from '../utils/registry';
-import { isPackageJsonExists } from '../utils/get-package-json';
+import { handleError } from '@/src/utils/handle-error';
+import { preFlightAdd } from '@/src/preflights/preflight-add';
+import { addComponents } from '@/src/utils/add-components';
+import { getRegistryIndex } from '@/src/registry/api';
+import { logger } from '@/src/utils/logger';
+
+export const addOptionsSchema = z.object({
+  components: z.array(z.string()).optional(),
+  cwd: z.string(),
+  path: z.string().optional(),
+  overwrite: z.boolean(),
+  all: z.boolean(),
+  silent: z.boolean(),
+});
 
 export const add = new Command()
   .name('add')
-  .description('add a component, hook, type, utility, or style to your project')
-  .argument(
-    '<items...>',
-    'the items(components, hooks, types, utils, styles) to add',
+  .description('add components to the project')
+  .argument('[components...]', 'components to add')
+  .option('-o, --overwrite', 'overwrite existing files', false)
+  .option(
+    '-c, --cwd <cwd>',
+    'the working directory. defaults to the current directory',
+    process.cwd(),
   )
-  .option('-C, --component', 'add a component', false)
-  .option('-H, --hook', 'add a hook', false)
-  .option('-T, --type', 'add a type', false)
-  .option('-U, --utility', 'add a utility', false)
-  .option('-S, --style', 'add a style', false)
-  .action(async (items, options) => {
-    // check if package.json file exists or not
-    if (!isPackageJsonExists()) {
-      console.error(
-        `No ${chalk.yellow('package.json')} file found, please create a react-native project first and then run ${chalk.cyan('init')}.`,
-      );
-      process.exit(1);
+  .option('-a, --all', 'add all available components', false)
+  .option('-p, --path <path>', 'the path to add the component to.')
+  .option('-s, --silent', 'mute output', false)
+  .action(async (components, opts) => {
+    try {
+      const options = addOptionsSchema.parse({
+        ...opts,
+        components,
+        cwd: path.resolve(opts.cwd),
+      });
+
+      const { config } = await preFlightAdd(options);
+
+      if (!options.components?.length) {
+        options.components = await promptForRegistryComponents(options);
+      }
+
+      await addComponents(options.components, config, {
+        overwrite: options.overwrite,
+        silent: options.silent,
+        path: options.path,
+      });
+    } catch (error) {
+      handleError(error);
     }
-
-    const projectConfig = validateProjectConfig();
-
-    // if -C or --component is passed, it means the items(argument) are components
-    // if -H or --hook is passed, it means the items(argument) are hooks
-    // same logic for the -T, -U, -S options
-
-    const itemsType = getItemsType(options);
-
-    const registryItems = await fetchRegistryItems(items, itemsType);
-
-    await addRegistryItems(registryItems, projectConfig);
   });
 
-function validateProjectConfig() {
-  const config = getProjectConfig();
-  if (!config) {
-    console.error(
-      `No ${chalk.yellow('components.json')} file found. Please run ${chalk.cyan('init')} first.`,
-    );
-    process.exit(1);
-  } else if (!isValidProjectConfig(config)) {
-    console.error(
-      `Invalid ${chalk.yellow('components.json')} file found. To start over, remove ${chalk.yellow('components.json')} file and run ${chalk.cyan('init')} again.`,
-    );
-    process.exit(1);
-  } else {
-    return config;
+async function promptForRegistryComponents(
+  options: z.infer<typeof addOptionsSchema>,
+) {
+  const registryIndex = await getRegistryIndex();
+  if (!registryIndex) {
+    handleError(new Error('Failed to fetch registry index.'));
+    return [];
   }
-}
 
-function getItemsType(options: any): RegistryItemType | undefined {
-  if (options.component) {
-    return 'component';
+  if (options.all) {
+    return registryIndex.map((item) => item.name);
   }
-  if (options.hook) {
-    return 'hook';
+
+  if (options.components?.length) {
+    return options.components;
   }
-  if (options.type) {
-    return 'type';
+
+  const { components } = await prompts({
+    type: 'multiselect',
+    name: 'components',
+    message: 'Which components would you like to add?',
+    hint: 'Space to select. A to toggle all. Enter to submit.',
+    instructions: false,
+    choices: registryIndex.map((item) => ({
+      title: item.name,
+      value: item.name,
+      selected: options.components?.includes(item.name),
+    })),
+  });
+
+  if (!components?.length) {
+    logger.warn('No components selected. Exiting.');
+    logger.break();
+    process.exit(1);
   }
-  if (options.utility) {
-    return 'utility';
+
+  const result = z.array(z.string()).safeParse(components);
+  if (!result.success) {
+    logger.error('');
+    handleError(new Error('Something went wrong. Please try again.'));
+    return [];
   }
-  if (options.style) {
-    return 'style';
-  }
+  return result.data;
 }

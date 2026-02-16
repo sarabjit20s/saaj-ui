@@ -1,7 +1,7 @@
 {
-  "name": "saaj-ui",
-  "version": "1.0.0",
-  "description": "Add Saaj UI components, hooks, types and utilities to your project",
+  "name": "saaj",
+  "version": "1.1.0",
+  "description": "Add components to your apps.",
   "publishConfig": {
     "access": "public"
   },
@@ -28,7 +28,12 @@
   "files": [
     "dist"
   ],
-  "exports": "./dist/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "bin": "./dist/index.js",
   "scripts": {
     "build": "tsup",
@@ -38,18 +43,35 @@
     "pub:latest": "pnpm build && pnpm publish --no-git-checks --access public"
   },
   "dependencies": {
-    "@inquirer/prompts": "^7.2.3",
-    "@saaj-ui/registry": "workspace:*",
+    "@babel/generator": "^7.28.6",
+    "@babel/parser": "^7.28.6",
+    "@babel/traverse": "^7.28.6",
+    "@babel/types": "^7.28.6",
     "chalk": "^5.4.1",
+    "colorjs.io": "^0.5.2",
     "commander": "^13.0.0",
-    "package-manager-detector": "^0.2.8",
-    "shelljs": "^0.8.5",
-    "yocto-spinner": "^0.1.2"
+    "cosmiconfig": "^9.0.0",
+    "deepmerge": "^4.3.1",
+    "execa": "^9.6.1",
+    "fast-glob": "^3.3.3",
+    "fs-extra": "^11.3.3",
+    "package-manager-detector": "^1.6.0",
+    "plist": "^3.1.0",
+    "prompts": "^2.4.2",
+    "ts-morph": "^27.0.2",
+    "tsconfig-paths": "^4.2.0",
+    "yocto-spinner": "^0.1.2",
+    "zod": "^4.2.1"
   },
   "devDependencies": {
+    "@types/babel__generator": "^7.27.0",
+    "@types/babel__traverse": "^7.28.0",
+    "@types/fs-extra": "^11.0.4",
     "@types/node": "22.10.2",
-    "@types/shelljs": "^0.8.15",
+    "@types/plist": "^3.0.5",
+    "@types/prompts": "^2.4.9",
     "tsup": "^8.3.5",
+    "type-fest": "^5.3.1",
     "typescript": "^5.7.3"
   }
 }
