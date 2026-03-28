@@ -54,7 +54,7 @@ function Hero() {
             asChild
             className="rounded-full w-full sm:w-auto h-12 px-8 shadow-xl shadow-fd-primary/10 transition-transform active:scale-95"
           >
-            <Link href="/docs">Browse Components</Link>
+            <Link href="/docs">Get Started</Link>
           </Button>
           <Button
             size="lg"
