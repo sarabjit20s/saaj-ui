@@ -36,7 +36,16 @@ function Hero() {
 
         <p className="mt-6 max-w-2xl text-lg text-fd-muted-foreground sm:text-xl leading-relaxed">
           Beautifully designed, accessible, and customizable components built
-          with Unistyles. Free, open source, and yours to keep.
+          with{' '}
+          <a
+            href="https://unistyles.dev/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-pink-500 hover:underline"
+          >
+            Unistyles
+          </a>
+          . Free, open source, and yours to keep.
         </p>
 
         <div className="mt-10 gap-4 flex flex-col sm:flex-row w-full sm:w-auto">
