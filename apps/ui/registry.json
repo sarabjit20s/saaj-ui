@@ -1,0 +1,213 @@
+{
+  "$schema": "https://saaj-ui.vercel.app/schema/registry.json",
+  "name": "saaj-ui",
+  "homepage": "https://saaj-ui.vercel.app/",
+  "items": [
+    {
+      "name": "alert",
+      "type": "registry:ui",
+      "registryDependencies": ["icon", "text"],
+      "files": [
+        {
+          "path": "src/registry/ui/alert.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "avatar",
+      "type": "registry:ui",
+      "registryDependencies": ["icon", "text"],
+      "files": [
+        {
+          "path": "src/registry/ui/avatar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "badge",
+      "type": "registry:ui",
+      "registryDependencies": ["icon", "text"],
+      "files": [
+        {
+          "path": "src/registry/ui/badge.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "registryDependencies": ["icon", "text"],
+      "files": [
+        {
+          "path": "src/registry/ui/button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "checkbox",
+      "type": "registry:ui",
+      "dependencies": ["react-native-svg"],
+      "registryDependencies": ["icon", "use-controllable-state"],
+      "files": [
+        {
+          "path": "src/registry/ui/checkbox.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "collapsible",
+      "type": "registry:ui",
+      "registryDependencies": ["use-controllable-state"],
+      "files": [
+        {
+          "path": "src/registry/ui/collapsible.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "dialog",
+      "type": "registry:ui",
+      "registryDependencies": [
+        "text",
+        "use-controllable-state",
+        "compose-refs"
+      ],
+      "files": [
+        {
+          "path": "src/registry/ui/dialog.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "icon",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "src/registry/ui/icon.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "progress",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "src/registry/ui/progress.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "radio-group",
+      "type": "registry:ui",
+      "registryDependencies": ["use-controllable-state"],
+      "files": [
+        {
+          "path": "src/registry/ui/radio-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "separator",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "src/registry/ui/separator.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "skeleton",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "src/registry/ui/skeleton.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "spinner",
+      "type": "registry:ui",
+      "dependencies": ["react-native-svg"],
+      "registryDependencies": ["icon"],
+      "files": [
+        {
+          "path": "src/registry/ui/spinner.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "switch",
+      "type": "registry:ui",
+      "registryDependencies": ["use-controllable-state"],
+      "files": [
+        {
+          "path": "src/registry/ui/switch.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "text-area",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "src/registry/ui/text-area.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "text-input",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "src/registry/ui/text-input.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "text",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "src/registry/ui/text.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "use-controllable-state",
+      "type": "registry:hook",
+      "files": [
+        {
+          "path": "src/registry/hooks/use-controllable-state.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
+      "name": "compose-refs",
+      "type": "registry:util",
+      "files": [
+        {
+          "path": "src/registry/utils/compose-refs.ts",
+          "type": "registry:util"
+        }
+      ]
+    }
+  ]
+}
