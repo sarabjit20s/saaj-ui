@@ -1,0 +1,16 @@
+{
+  "$schema": "https://saaj-ui.vercel.app/schema/registry-item.json",
+  "name": "badge",
+  "type": "registry:ui",
+  "registryDependencies": [
+    "icon",
+    "text"
+  ],
+  "files": [
+    {
+      "path": "src/registry/ui/badge.tsx",
+      "content": "import React, { createContext, useContext, useMemo } from 'react';\nimport { View } from 'react-native';\nimport { StyleSheet } from 'react-native-unistyles';\n\nimport { Icon, IconProps } from '@/registry/ui/icon';\nimport { Text, TextProps } from '@/registry/ui/text';\nimport { Color } from '@/styles/tokens/colors';\n\ntype BadgeVariant =\n  | 'primary'\n  | 'secondary'\n  | 'destructive'\n  | 'success'\n  | 'outline';\n\ntype BadgeContextType = {\n  variant: BadgeVariant;\n};\n\nconst BadgeContext = createContext<BadgeContextType | null>(null);\n\nconst useBadge = () => {\n  const ctx = useContext(BadgeContext);\n  if (!ctx) {\n    throw new Error('useBadge must be used within a <Badge />');\n  }\n  return ctx;\n};\n\ntype BadgeProps = React.ComponentPropsWithRef<typeof View> & {\n  variant?: BadgeVariant;\n  iconOnly?: boolean;\n};\n\nfunction Badge({\n  variant = 'primary',\n  iconOnly = false,\n  style,\n  ...restProps\n}: BadgeProps) {\n  styles.useVariants({\n    variant,\n  });\n\n  const contextValue = useMemo<BadgeContextType>(() => {\n    return {\n      variant,\n    };\n  }, [variant]);\n\n  return (\n    <BadgeContext value={contextValue}>\n      <View\n        style={[styles.badge, iconOnly && styles.badgeIconOnly, style]}\n        {...restProps}\n      />\n    </BadgeContext>\n  );\n}\n\nconst fgColorMap: Record<NonNullable<BadgeProps['variant']>, Color> = {\n  primary: 'primaryForeground',\n  secondary: 'secondaryForeground',\n  destructive: 'destructiveForeground',\n  success: 'successForeground',\n  outline: 'secondaryForeground',\n};\n\nfunction BadgeText(props: TextProps) {\n  const { variant } = useBadge();\n\n  return <Text color={fgColorMap[variant]} variant=\"labelXs\" {...props} />;\n}\n\nBadge.Text = BadgeText;\n\nfunction BadgeIcon(props: IconProps) {\n  const { variant } = useBadge();\n\n  return <Icon color={fgColorMap[variant]} size={14} {...props} />;\n}\n\nBadge.Icon = BadgeIcon;\n\nconst styles = StyleSheet.create(({ colors, radius, space }) => ({\n  badge: {\n    flexDirection: 'row',\n    alignItems: 'center',\n    justifyContent: 'center',\n    borderRadius: radius.full,\n    borderCurve: 'continuous',\n    gap: space.xs,\n    paddingVertical: space.xs,\n    paddingHorizontal: space.md,\n    variants: {\n      variant: {\n        primary: {\n          backgroundColor: colors.primary,\n        },\n        secondary: {\n          backgroundColor: colors.secondary,\n        },\n        destructive: {\n          backgroundColor: colors.destructive,\n        },\n        success: {\n          backgroundColor: colors.success,\n        },\n        outline: {\n          borderWidth: 1,\n          borderColor: colors.border,\n        },\n      },\n    },\n  },\n  badgeIconOnly: {\n    paddingHorizontal: space.xs,\n  },\n}));\n\nexport { Badge, useBadge };\nexport type { BadgeProps };\n",
+      "type": "registry:ui"
+    }
+  ]
+}

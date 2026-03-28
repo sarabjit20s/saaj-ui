@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The name of the item. This is used to identify the item in the registry. It should be unique for your registry."
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "registry:ui",
+        "registry:component",
+        "registry:hook",
+        "registry:util",
+        "registry:block",
+        "registry:file"
+      ],
+      "description": "The type of the item. This is used to determine the type and target path of the item when resolved for a project."
+    },
+    "description": {
+      "type": "string",
+      "description": "The description of the item. This is used to provide a brief overview of the item."
+    },
+    "title": {
+      "type": "string",
+      "description": "The human-readable title for your registry item. Keep it short and descriptive."
+    },
+    "author": {
+      "type": "string",
+      "description": "The author of the item. Recommended format: username <url>"
+    },
+    "dependencies": {
+      "type": "array",
+      "description": "An array of NPM dependencies required by the registry item.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "devDependencies": {
+      "type": "array",
+      "description": "An array of NPM dev dependencies required by the registry item.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "registryDependencies": {
+      "type": "array",
+      "description": "An array of registry items that this item depends on.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "files": {
+      "type": "array",
+      "description": "The main payload of the registry item. This is an array of files that are part of the registry item. Each file is an object with a path, content, type, and target.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "The path to the file relative to the registry root."
+          },
+          "content": {
+            "type": "string",
+            "description": "The content of the file."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "registry:util",
+              "registry:block",
+              "registry:component",
+              "registry:ui",
+              "registry:hook",
+              "registry:theme",
+              "registry:page",
+              "registry:file",
+              "registry:style",
+              "registry:base",
+              "registry:item"
+            ],
+            "description": "The type of the file. This is used to determine the type of the file when resolved for a project."
+          },
+          "target": {
+            "type": "string",
+            "description": "The target path of the file. This is the path to the file in the project."
+          }
+        },
+        "if": {
+          "properties": {
+            "type": {
+              "enum": ["registry:file"]
+            }
+          }
+        },
+        "then": {
+          "required": ["path", "type", "target"]
+        },
+        "else": {
+          "required": ["path", "type"]
+        }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "description": "Additional metadata for the registry item. This is an object with any key value pairs.",
+      "additionalProperties": true
+    },
+    "docs": {
+      "type": "string",
+      "description": "The documentation for the registry item. This is a markdown string."
+    }
+  }
+}

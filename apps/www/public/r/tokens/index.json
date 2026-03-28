@@ -1,0 +1,217 @@
+{
+  "breakpoints": {
+    "xs": 0,
+    "sm": 640,
+    "md": 768,
+    "lg": 1024
+  },
+  "radius": {
+    "xs": 16,
+    "sm": 20,
+    "md": 24,
+    "lg": 28,
+    "xl": 32,
+    "2xl": 36,
+    "3xl": 48,
+    "4xl": 56,
+    "none": 0,
+    "full": 9999
+  },
+  "space": {
+    "2xs": 2,
+    "xs": 4,
+    "sm": 6,
+    "md": 8,
+    "lg": 12,
+    "xl": 16,
+    "2xl": 20,
+    "3xl": 24,
+    "4xl": 32,
+    "5xl": 40,
+    "6xl": 48,
+    "7xl": 64,
+    "8xl": 80,
+    "9xl": 96
+  },
+  "typography": {
+    "android": {
+      "variants": {
+        "displayLg": {
+          "fontSize": 52,
+          "fontWeight": "700",
+          "lineHeight": 62,
+          "letterSpacing": 0.5
+        },
+        "displayMd": {
+          "fontSize": 44,
+          "fontWeight": "700",
+          "lineHeight": 52,
+          "letterSpacing": 0.25
+        },
+        "displaySm": {
+          "fontSize": 40,
+          "fontWeight": "700",
+          "lineHeight": 48,
+          "letterSpacing": 0.1
+        },
+        "displayXs": {
+          "fontSize": 36,
+          "fontWeight": "700",
+          "lineHeight": 42
+        },
+        "headlineLg": {
+          "fontSize": 32,
+          "fontWeight": "600",
+          "lineHeight": 42
+        },
+        "headlineMd": {
+          "fontSize": 28,
+          "fontWeight": "600",
+          "lineHeight": 36
+        },
+        "headlineSm": {
+          "fontSize": 24,
+          "fontWeight": "600",
+          "lineHeight": 30
+        },
+        "headlineXs": {
+          "fontSize": 20,
+          "fontWeight": "600",
+          "lineHeight": 26
+        },
+        "labelLg": {
+          "fontSize": 18,
+          "fontWeight": "500",
+          "lineHeight": 24,
+          "letterSpacing": 0.25
+        },
+        "labelMd": {
+          "fontSize": 16,
+          "fontWeight": "500",
+          "lineHeight": 22,
+          "letterSpacing": 0.25
+        },
+        "labelSm": {
+          "fontSize": 14,
+          "fontWeight": "500",
+          "lineHeight": 18,
+          "letterSpacing": 0.4
+        },
+        "labelXs": {
+          "fontSize": 12,
+          "fontWeight": "500",
+          "lineHeight": 16,
+          "letterSpacing": 0.4
+        },
+        "bodyLg": {
+          "fontSize": 18,
+          "fontWeight": "400",
+          "lineHeight": 28,
+          "letterSpacing": 0.15
+        },
+        "bodyMd": {
+          "fontSize": 16,
+          "fontWeight": "400",
+          "lineHeight": 24,
+          "letterSpacing": 0.25
+        },
+        "bodySm": {
+          "fontSize": 14,
+          "fontWeight": "400",
+          "lineHeight": 20,
+          "letterSpacing": 0.25
+        },
+        "bodyXs": {
+          "fontSize": 12,
+          "fontWeight": "400",
+          "lineHeight": 18,
+          "letterSpacing": 0.4
+        }
+      }
+    },
+    "ios": {
+      "variants": {
+        "displayLg": {
+          "fontSize": 52,
+          "fontWeight": "700",
+          "lineHeight": 62
+        },
+        "displayMd": {
+          "fontSize": 44,
+          "fontWeight": "700",
+          "lineHeight": 52
+        },
+        "displaySm": {
+          "fontSize": 40,
+          "fontWeight": "700",
+          "lineHeight": 48
+        },
+        "displayXs": {
+          "fontSize": 36,
+          "fontWeight": "700",
+          "lineHeight": 42
+        },
+        "headlineLg": {
+          "fontSize": 32,
+          "fontWeight": "600",
+          "lineHeight": 42
+        },
+        "headlineMd": {
+          "fontSize": 28,
+          "fontWeight": "600",
+          "lineHeight": 36
+        },
+        "headlineSm": {
+          "fontSize": 24,
+          "fontWeight": "600",
+          "lineHeight": 30
+        },
+        "headlineXs": {
+          "fontSize": 20,
+          "fontWeight": "600",
+          "lineHeight": 26
+        },
+        "labelLg": {
+          "fontSize": 18,
+          "fontWeight": "500",
+          "lineHeight": 24
+        },
+        "labelMd": {
+          "fontSize": 16,
+          "fontWeight": "500",
+          "lineHeight": 22
+        },
+        "labelSm": {
+          "fontSize": 14,
+          "fontWeight": "500",
+          "lineHeight": 18
+        },
+        "labelXs": {
+          "fontSize": 12,
+          "fontWeight": "500",
+          "lineHeight": 16
+        },
+        "bodyLg": {
+          "fontSize": 18,
+          "fontWeight": "400",
+          "lineHeight": 28
+        },
+        "bodyMd": {
+          "fontSize": 16,
+          "fontWeight": "400",
+          "lineHeight": 24
+        },
+        "bodySm": {
+          "fontSize": 14,
+          "fontWeight": "400",
+          "lineHeight": 20
+        },
+        "bodyXs": {
+          "fontSize": 12,
+          "fontWeight": "400",
+          "lineHeight": 18
+        }
+      }
+    }
+  }
+}

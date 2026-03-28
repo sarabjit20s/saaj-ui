@@ -19,7 +19,7 @@ export const baseOptions: BaseLayoutProps = {
         </span>
       </div>
     ),
-    transparentMode: 'always',
+    transparentMode: 'none',
   },
   links: [
     {
@@ -29,8 +29,12 @@ export const baseOptions: BaseLayoutProps = {
     },
     {
       text: 'Components',
-      url: '/docs/components/accordion',
+      url: '/docs/components',
       active: 'nested-url',
+    },
+    {
+      text: 'Colors',
+      url: '/colors',
     },
   ],
   githubUrl: 'https://github.com/sarabjit20s/saaj-ui',

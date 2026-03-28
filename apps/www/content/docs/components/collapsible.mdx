@@ -4,56 +4,57 @@ description: A component that allows the user to expand or collapse content.
 ---
 
 
-## Preview
-
-<ComponentPreview name="Collapsible" />
-
-
 ## Installation
 
-<ItemInstallationDoc name="Collapsible" />
+<ComponentInstallationDoc name="collapsible" />
 
 
 ## Usage
 
-```tsx title="MyCollapsible.tsx"
-import { createStyleSheet, useStyles } from 'react-native-unistyles';
+```tsx
+import { StyleSheet } from 'react-native-unistyles';
 
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/Collapsible';
-import { Button, ButtonIcon } from '@/components/ui/Button';
-import { Text } from '@/components/ui/Text';
+import { Collapsible } from '@/components/ui/collapsible';
+import { Button } from '@/components/ui/button';
+import { Text } from '@/components/ui/text';
 
-export function MyCheckbox() {
-  const { styles } = useStyles(stylesheet);
+const recoveryKeys = ['4829-1735-6621', '9182-6407-5532', '3051-7924-9018'];
 
+export function CollapsibleDemo() {
   return (
     <Collapsible>
-      <CollapsibleTrigger as={Button} variant="soft" iconOnly>
-        <ButtonIcon name={'chevron-expand'} />
-      </CollapsibleTrigger>
-      <CollapsibleContent style={styles.collapsibleContent}>
-        <Text variant="bodySm">
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry's standard dummy text ever
-          since the 1500s, when an unknown printer took a galley of type and
-          scrambled it to make a type specimen book.
-        </Text>
-      </CollapsibleContent>
+      <Collapsible.Trigger as={Button} size="sm" variant="outline">
+        <Button.Text>Show recovery keys</Button.Text>
+        <Collapsible.State>
+          {state => (
+            <Button.Icon
+              name={state.open ? 'chevron-up' : 'chevron-down'}
+            />
+          )}
+        </Collapsible.State>
+      </Collapsible.Trigger>
+      <Collapsible.Content style={styles.collapsibleContent}>
+        {recoveryKeys.map(key => (
+          <Text key={key} style={styles.keyItem}>
+            {key}
+          </Text>
+        ))}
+      </Collapsible.Content>
     </Collapsible>
   );
 }
 
-const stylesheet = createStyleSheet((theme) => ({
+const styles = StyleSheet.create(theme => ({
   collapsibleContent: {
-    padding: theme.space[12],
-    gap: theme.space[4],
-    borderRadius: theme.radius.md,
+    paddingTop: theme.space.md,
+    gap: theme.space.md,
+  },
+  keyItem: {
+    paddingHorizontal: theme.space.lg,
+    paddingVertical: theme.space.sm,
+    borderRadius: theme.radius.sm,
     borderCurve: 'continuous',
-    backgroundColor: theme.colors.neutral3,
+    backgroundColor: theme.colors.muted,
   },
 }));
 ```

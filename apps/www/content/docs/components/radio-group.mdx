@@ -4,59 +4,29 @@ description: Displays a group of radio buttons.
 ---
 
 
-## Preview
-
-<ComponentPreview name="RadioGroup" />
-
-
 ## Installation
 
-<ItemInstallationDoc name="RadioGroup" />
+<ComponentInstallationDoc name="radio-group" />
 
 
 ## Usage
 
-```tsx title="MyRadioGroup.tsx"
-import { createStyleSheet, useStyles } from 'react-native-unistyles';
+```tsx
+import { RadioGroup } from '@/components/ui/radio-group';
+import { Text } from '@/components/ui/text';
 
-import {
-  RadioGroup,
-  RadioGroupItem,
-  RadioGroupIndicator
-} from '@/components/ui/RadioGroup';
-import { Text } from '@/components/ui/Text';
+const languages = ['JavaScript', 'Rust', 'Python'];
 
-export function MyRadioGroup() {
-  const { styles } = useStyles(stylesheet);
+export function RadioGroupDemo() {
   return (
-    <RadioGroup style={styles.radioGroup}>
-      <Text variant="labelMd" highContrast>
-        Do you like video games?
-      </Text>
-      <RadioGroupItem value="yes" style={styles.item}>
-        <RadioGroupIndicator />
-        <Text variant="labelMd" highContrast>
-          Yes
-        </Text>
-      </RadioGroupItem>
-      <RadioGroupItem value="no" style={styles.item}>
-        <RadioGroupIndicator />
-        <Text variant="labelMd" highContrast>
-          No
-        </Text>
-      </RadioGroupItem>
+    <RadioGroup defaultValue="JavaScript">
+      {languages.map(language => (
+        <RadioGroup.Item key={language} value={language}>
+          <RadioGroup.ItemIndicator />
+          <Text>{language}</Text>
+        </RadioGroup.Item>
+      ))}
     </RadioGroup>
   );
 }
-
-const stylesheet = createStyleSheet(theme => ({
-  radioGroup: {
-    gap: theme.space[8],
-  },
-  item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: theme.space[8],
-  },
-}))
 ```

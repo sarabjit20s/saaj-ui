@@ -1,0 +1,24 @@
+---
+title: Progress
+description: Displays the status of a task that takes a long time to complete.
+---
+
+
+## Installation
+
+<ComponentInstallationDoc name="progress" />
+
+
+## Usage
+
+```tsx
+import { Progress } from '@/components/ui/progress';
+
+export function ProgressDemo() {
+  const [progress, setProgress] = useState(20);
+
+  return (
+    <Progress value={progress} />
+  );
+}
+```

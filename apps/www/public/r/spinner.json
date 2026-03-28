@@ -1,0 +1,18 @@
+{
+  "$schema": "https://saaj-ui.vercel.app/schema/registry-item.json",
+  "name": "spinner",
+  "type": "registry:ui",
+  "dependencies": [
+    "react-native-svg"
+  ],
+  "registryDependencies": [
+    "icon"
+  ],
+  "files": [
+    {
+      "path": "src/registry/ui/spinner.tsx",
+      "content": "import { useEffect } from 'react';\nimport Animated, {\n  useSharedValue,\n  useAnimatedStyle,\n  withRepeat,\n  withTiming,\n  Easing,\n} from 'react-native-reanimated';\nimport Svg, { Defs, LinearGradient, Path, Stop } from 'react-native-svg';\nimport { useUnistyles } from 'react-native-unistyles';\n\nimport { Color } from '@/styles/tokens/colors';\n\ntype SpinnerProps = {\n  size?: number;\n  color?: Color;\n  /**\n   * Whether the spinner is loading or not\n   */\n  loading?: boolean;\n  /**\n   * Speed of the spinner in milliseconds\n   */\n  speed?: number;\n};\n\nfunction Spinner({ loading = true, ...props }: SpinnerProps) {\n  if (!loading) {\n    return null;\n  }\n  return <SpinnerImpl loading={loading} {...props} />;\n}\n\nfunction SpinnerImpl({\n  size = 24,\n  color: colorProp = 'foreground',\n  speed = 800,\n}: SpinnerProps) {\n  const { theme } = useUnistyles();\n\n  const color = theme.colors[colorProp];\n\n  const rotation = useSharedValue(0);\n\n  useEffect(() => {\n    rotation.value = withRepeat(\n      withTiming(360, { duration: speed, easing: Easing.linear }),\n      -1,\n      false,\n    );\n    // eslint-disable-next-line react-hooks/exhaustive-deps\n  }, [speed]);\n\n  const animatedStyle = useAnimatedStyle(() => ({\n    transform: [{ rotate: `${rotation.value}deg` }],\n  }));\n\n  return (\n    <Animated.View style={[{ width: size, height: size }, animatedStyle]}>\n      <Svg width={size} height={size} viewBox=\"0 0 24 24\">\n        <Defs>\n          <LinearGradient\n            id=\"gradient\"\n            x1=\"75%\"\n            x2=\"50%\"\n            y1=\"0%\"\n            y2=\"100%\"\n            gradientTransform=\"rotate(-100)\"\n          >\n            <Stop offset=\"0%\" stopColor={color} />\n            <Stop offset=\"100%\" stopColor={color} stopOpacity={0} />\n          </LinearGradient>\n        </Defs>\n\n        <Path\n          d=\"M10.25 1.55a1.5 1.5 0 1 1 .497 2.958A7.5 7.5 0 1 0 18 12a1.5 1.5 0 0 1 3 0c0 5.799-4.701 10.5-10.5 10.5S0 17.799 0 12C0 6.855 3.726 2.49 8.749 1.646\"\n          fill=\"url(#gradient)\"\n          transform=\"translate(1.5 0)\"\n        />\n      </Svg>\n    </Animated.View>\n  );\n}\n\nexport { Spinner };\nexport type { SpinnerProps };\n",
+      "type": "registry:ui"
+    }
+  ]
+}

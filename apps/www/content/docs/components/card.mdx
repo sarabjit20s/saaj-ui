@@ -1,0 +1,65 @@
+---
+title: Card
+description: A container component for grouping related content.
+---
+
+
+## Installation
+
+<ComponentInstallationDoc name="card" />
+
+
+## Usage
+
+```tsx
+import { View } from 'react-native';
+import { StyleSheet } from 'react-native-unistyles';
+
+import { Card } from '@/components/ui/card';
+import { Icon } from '@/components/ui/icon';
+import { Text } from '@/components/ui/text';
+
+export function CardDemo() {
+  return (
+    <View style={styles.statsCardsGroup}>
+      <Card size="sm" style={styles.statsCard}>
+        <Card.Header style={styles.statsCardHeader}>
+          <Icon name="clock" size={18} color="warning11" />
+          <Card.Title color="warning11" variant="labelMd">
+            Active Trials
+          </Card.Title>
+        </Card.Header>
+        <Card.Content>
+          <Text variant="headlineMd">123</Text>
+        </Card.Content>
+      </Card>
+      <Card size="sm" style={styles.statsCard}>
+        <Card.Header style={styles.statsCardHeader}>
+          <Icon name="users-round" size={18} color="primary11" />
+          <Card.Title color="primary11" variant="labelMd">
+            Active Users
+          </Card.Title>
+        </Card.Header>
+        <Card.Content>
+          <Text variant="headlineMd">1,234</Text>
+        </Card.Content>
+      </Card>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create((theme) => ({
+  statsCardsGroup: {
+    gap: theme.space.xl,
+    flexDirection: 'row',
+  },
+  statsCard: {
+    flex: 1,
+  },
+  statsCardHeader: {
+    flexDirection: 'row',
+    gap: theme.space.md,
+    alignItems: 'center',
+  },
+}));
+```

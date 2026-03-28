@@ -3,19 +3,13 @@
   "description": "A collection of beautiful UI components for React Native",
   "root": true,
   "pages": [
-    "---Getting Started---",
+    "---Sections---",
     "index",
     "installation",
     "---Installation Guides---",
     "installation-guides/expo",
     "installation-guides/react-native",
     "---Components---",
-    "...components",
-    "---Hooks---",
-    "...hooks",
-    "---Utilities---",
-    "...utils",
-    "---Types---",
-    "...types"
+    "...components"
   ]
 }

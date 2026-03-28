@@ -1,0 +1,12 @@
+{
+  "$schema": "https://saaj-ui.vercel.app/schema/registry-item.json",
+  "name": "use-controllable-state",
+  "type": "registry:hook",
+  "files": [
+    {
+      "path": "src/registry/hooks/use-controllable-state.ts",
+      "content": "import React from 'react';\n\ntype UseControllableStateProps<T> = {\n  defaultValue: T;\n  controlledValue?: T;\n  onControlledChange?: (value: T) => void;\n};\n\nfunction useControllableState<T>({\n  defaultValue,\n  controlledValue,\n  onControlledChange = () => {},\n}: UseControllableStateProps<T>): [T, React.Dispatch<React.SetStateAction<T>>] {\n  const [uncontrolledValue, setUncontrolledValue] =\n    React.useState<T>(defaultValue);\n\n  const isControlled = controlledValue !== undefined;\n\n  const value = isControlled ? (controlledValue as T) : uncontrolledValue;\n\n  const setValue = React.useCallback(\n    (newValue: React.SetStateAction<T>) => {\n      const resolvedValue =\n        typeof newValue === 'function'\n          ? (newValue as (prev: T) => T)(value)\n          : newValue;\n\n      if (isControlled) {\n        // Call onControlledChange when controlled to notify parent of the new value\n        onControlledChange(resolvedValue);\n      } else {\n        // Update internal state when uncontrolled\n        setUncontrolledValue(resolvedValue);\n        // Call onControlledChange even if uncontrolled to notify user with the updated value\n        onControlledChange(resolvedValue);\n      }\n    },\n    [isControlled, onControlledChange, value],\n  );\n\n  return [value, setValue];\n}\n\nexport { useControllableState };\nexport type { UseControllableStateProps };\n",
+      "type": "registry:hook"
+    }
+  ]
+}

@@ -21,25 +21,25 @@ export function PackageInstaller({
       <Tab value="npm">
         <DynamicCodeBlock
           lang="bash"
-          code={`npm install ${asDev ? '-D' : ''} ${dependencies.join(' ')}`}
+          code={`npm install ${asDev ? '-D ' : ''}${dependencies.join(' ')}`}
         />
       </Tab>
       <Tab value="yarn">
         <DynamicCodeBlock
           lang="bash"
-          code={`yarn add ${asDev ? '-D' : ''} ${dependencies.join(' ')}`}
+          code={`yarn add ${asDev ? '-D ' : ''}${dependencies.join(' ')}`}
         />
       </Tab>
       <Tab value="pnpm">
         <DynamicCodeBlock
           lang="bash"
-          code={`pnpm add ${asDev ? '-D' : ''} ${dependencies.join(' ')}`}
+          code={`pnpm add ${asDev ? '-D ' : ''}${dependencies.join(' ')}`}
         />
       </Tab>
       <Tab value="bun">
         <DynamicCodeBlock
           lang="bash"
-          code={`bun add ${asDev ? '-D' : ''} ${dependencies.join(' ')}`}
+          code={`bun add ${asDev ? '-D ' : ''}${dependencies.join(' ')}`}
         />
       </Tab>
     </Tabs>

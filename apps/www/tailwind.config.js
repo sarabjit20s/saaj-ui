@@ -11,7 +11,7 @@ export default {
   ],
   presets: [
     createPreset({
-      preset: 'black',
+      preset: 'vitepress',
     }),
   ],
   theme: {

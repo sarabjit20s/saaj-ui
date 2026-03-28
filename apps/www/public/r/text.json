@@ -1,0 +1,12 @@
+{
+  "$schema": "https://saaj-ui.vercel.app/schema/registry-item.json",
+  "name": "text",
+  "type": "registry:ui",
+  "files": [
+    {
+      "path": "src/registry/ui/text.tsx",
+      "content": "import React from 'react';\nimport { Text as RNText, TextStyle } from 'react-native';\nimport { StyleSheet } from 'react-native-unistyles';\n\nimport { Color } from '@/styles/tokens/colors';\nimport { TextVariants } from '@/styles/tokens/typography';\n\ntype TextProps = React.ComponentPropsWithRef<typeof RNText> & {\n  color?: Color;\n  variant?: keyof TextVariants;\n  fontWeight?: TextStyle['fontWeight'];\n  letterSpacing?: TextStyle['letterSpacing'];\n  textAlign?: TextStyle['textAlign'];\n  textTransform?: TextStyle['textTransform'];\n};\n\nfunction Text({\n  color = 'foreground',\n  variant = 'bodyMd',\n  fontWeight,\n  letterSpacing,\n  textAlign,\n  textTransform,\n  style,\n  ...restProps\n}: TextProps) {\n  const overrideStyle: TextStyle = {};\n\n  if (fontWeight) {\n    overrideStyle.fontWeight = fontWeight;\n  }\n  if (letterSpacing) {\n    overrideStyle.letterSpacing = letterSpacing;\n  }\n  if (textAlign) {\n    overrideStyle.textAlign = textAlign;\n  }\n  if (textTransform) {\n    overrideStyle.textTransform = textTransform;\n  }\n\n  return (\n    <RNText\n      style={[\n        styles.text({\n          color,\n          variant,\n        }),\n        overrideStyle,\n        style,\n      ]}\n      {...restProps}\n    />\n  );\n}\n\nconst styles = StyleSheet.create(({ colors, typography }) => ({\n  text: ({\n    color,\n    variant,\n  }: {\n    color: Color;\n    variant: keyof TextVariants;\n  }) => ({\n    color: colors[`${color}`],\n    ...typography.variants[variant],\n  }),\n}));\n\nexport { Text };\nexport type { TextProps };\n",
+      "type": "registry:ui"
+    }
+  ]
+}

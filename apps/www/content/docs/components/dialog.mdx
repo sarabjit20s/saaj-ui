@@ -4,75 +4,43 @@ description: A modal dialog that appears on top of the current screen.
 ---
 
 
-## Preview
-
-<ComponentPreview name="Dialog" />
-
-
 ## Installation
 
-<ItemInstallationDoc name="Dialog" />
+<ComponentInstallationDoc name="dialog" />
 
 
 ## Usage
 
-```tsx title="MyDialog.tsx"
-import { View } from 'react-native';
-import { createStyleSheet, useStyles } from 'react-native-unistyles';
+```tsx
+import { Dialog } from '@/components/ui/Dialog';
+import { Button } from '@/components/ui/Button';
 
-import { Text } from '@/components/ui/Text';
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogOverlay,
-  DialogPortal,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/Dialog';
-import { Button, ButtonText } from '@/components/ui/Button';
-import { Text } from '@/components/ui/Text';
-
-export function MyDialog() {
-  const { styles } = useStyles(stylesheet);
-
+export function DialogDemo() {
   return (
     <Dialog>
-      <DialogTrigger as={Button}>
-        <ButtonText>Open Dialog</ButtonText>
-      </DialogTrigger>
-      <DialogPortal>
-        <DialogOverlay />
-        <DialogContent>
-          <DialogTitle>Delete Content</DialogTitle>
-          <DialogDescription style={styles.dialogDescription}>
-            Are you sure to remove this content? You can access this file for 7
-            days in your trash.
-          </DialogDescription>
-          <View style={styles.buttonGroup}>
-            <DialogClose as={Button} color="neutral" variant="soft" fill>
-              <ButtonText>Cancel</ButtonText>
-            </DialogClose>
-            <DialogClose as={Button} fill>
-              <ButtonText>Confirm</ButtonText>
-            </DialogClose>
-          </View>
-        </DialogContent>
-      </DialogPortal>
+      <Dialog.Trigger as={Button} variant="secondary">
+        <Button.Text>Allow Notifications</Button.Text>
+      </Dialog.Trigger>
+      <Dialog.Content>
+        <Dialog.Header>
+          <Dialog.Title>
+            `Calendar` would like to send you notifications
+          </Dialog.Title>
+          <Dialog.Description>
+            Notifications may include alerts, sounds, and icon badges. These
+            can be configured in Settings.
+          </Dialog.Description>
+        </Dialog.Header>
+        <Dialog.Footer>
+          <Dialog.Close as={Button} variant="secondary" fill>
+            <Button.Text>Don't Allow</Button.Text>
+          </Dialog.Close>
+          <Dialog.Close as={Button} variant="secondary" fill>
+            <Button.Text>Allow</Button.Text>
+          </Dialog.Close>
+        </Dialog.Footer>
+      </Dialog.Content>
     </Dialog>
   );
 }
-
-const stylesheet = createStyleSheet(theme => ({
-  dialogDescription: {
-    marginBottom: theme.space[20],
-  },
-  buttonGroup: {
-    flexDirection: 'row',
-    width: '100%',
-    gap: theme.space[16],
-    marginTop: theme.space[8],
-  },
-}))
 ```

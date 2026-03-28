@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
-    "dirs": {
+    "aliases": {
       "type": "object",
       "properties": {
         "components": {
@@ -11,18 +11,18 @@
         "hooks": {
           "type": "string"
         },
-        "styles": {
-          "type": "string"
-        },
-        "types": {
+        "ui": {
           "type": "string"
         },
         "utils": {
           "type": "string"
+        },
+        "styles": {
+          "type": "string"
         }
       },
-      "required": ["components", "hooks", "styles", "types", "utils"]
+      "required": ["components", "hooks", "ui", "utils", "styles"]
     }
   },
-  "required": ["dirs"]
+  "required": ["aliases"]
 }

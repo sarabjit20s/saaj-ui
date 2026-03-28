@@ -4,34 +4,27 @@ description: Short message to attract user’s attention.
 ---
 
 
-## Preview
-
-<ComponentPreview name="Alert" />
-
-
 ## Installation
 
-<ItemInstallationDoc name="Alert" />
+<ComponentInstallationDoc name="alert" />
 
 
 ## Usage
 
-```tsx title="MyAlert.tsx"
-import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
-} from '@/components/ui/Alert';
+```tsx
+import { Alert } from '@/components/ui/alert';
 
-export function MyAlert() {
+export function AlertDemo() {
   return (
     <Alert>
-      <AlertIcon name="time" />
-      <AlertTitle>No days available</AlertTitle>
-      <AlertDescription>
-        Days will appear here when more photos and videos are added to the library.
-      </AlertDescription>
+      <Alert.Icon name="clock" />
+      <Alert.Content>
+        <Alert.Title>No days available</Alert.Title>
+        <Alert.Description>
+          Days will appear here when more photos and videos are added to the
+          library.
+        </Alert.Description>
+      </Alert.Content>
     </Alert>
   );
 }

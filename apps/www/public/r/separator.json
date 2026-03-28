@@ -1,0 +1,12 @@
+{
+  "$schema": "https://saaj-ui.vercel.app/schema/registry-item.json",
+  "name": "separator",
+  "type": "registry:ui",
+  "files": [
+    {
+      "path": "src/registry/ui/separator.tsx",
+      "content": "import React from 'react';\nimport { View } from 'react-native';\nimport { StyleSheet } from 'react-native-unistyles';\n\ntype SeparatorVariant = 'hairline' | 'pixel' | 'cell' | 'section';\n\ntype SeparatorProps = React.ComponentPropsWithRef<typeof View> & {\n  orientation?: 'horizontal' | 'vertical';\n  variant?: SeparatorVariant;\n};\n\nconst thicknessMap: Record<SeparatorVariant, number> = {\n  hairline: StyleSheet.hairlineWidth,\n  pixel: 1,\n  cell: 2,\n  section: 4,\n};\n\nfunction Separator({\n  orientation = 'horizontal',\n  variant = 'pixel',\n  style,\n  ...restProps\n}: SeparatorProps) {\n  const thickness = thicknessMap[variant];\n\n  const width = orientation === 'horizontal' ? '100%' : thickness;\n  const height = orientation === 'horizontal' ? thickness : '100%';\n\n  return (\n    <View style={[styles.separator, { width, height }, style]} {...restProps} />\n  );\n}\n\nconst styles = StyleSheet.create(({ colors }) => ({\n  separator: {\n    backgroundColor: colors.borderSubtle,\n  },\n}));\n\nexport { Separator };\nexport type { SeparatorProps };\n",
+      "type": "registry:ui"
+    }
+  ]
+}

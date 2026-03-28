@@ -4,25 +4,20 @@ description: A Badge is a small visual indicator used to display a short piece o
 ---
 
 
-## Preview
-
-<ComponentPreview name="Badge" />
-
-
 ## Installation
 
-<ItemInstallationDoc name="Badge" />
+<ComponentInstallationDoc name="badge" />
 
 
 ## Usage
 
-```tsx title="MyBadge.tsx"
-import { Badge, BadgeText } from '@/components/ui/Badge';
+```tsx
+import { Badge } from '@/components/ui/badge';
 
-export function MyBadge() {
+export function BadgeDemo() {
   return (
     <Badge>
-      <BadgeText>New</BadgeText>
+      <Badge.Text>New</Badge.Text>
     </Badge>
   );
 }

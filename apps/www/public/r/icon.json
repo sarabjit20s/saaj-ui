@@ -1,0 +1,12 @@
+{
+  "$schema": "https://saaj-ui.vercel.app/schema/registry-item.json",
+  "name": "icon",
+  "type": "registry:ui",
+  "files": [
+    {
+      "path": "src/registry/ui/icon.tsx",
+      "content": "import React from 'react';\nimport VectorIcons from '@react-native-vector-icons/lucide';\nimport { withUnistyles } from 'react-native-unistyles';\n\nimport { Color } from '@/styles/tokens/colors';\n\nconst UniVectorIcons = withUnistyles(VectorIcons);\n\ntype IconProps = Omit<\n  React.ComponentPropsWithRef<typeof VectorIcons>,\n  'color'\n> & {\n  color?: Color;\n};\n\nfunction Icon({ color = 'foreground', size = 16, ...restProps }: IconProps) {\n  return (\n    <UniVectorIcons\n      size={size}\n      uniProps={theme => ({ color: theme.colors[color] })}\n      {...restProps}\n    />\n  );\n}\n\nexport { Icon };\nexport type { IconProps };\n",
+      "type": "registry:ui"
+    }
+  ]
+}

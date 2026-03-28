@@ -4,41 +4,23 @@ description: A control that allows the user to toggle between checked and not ch
 ---
 
 
-## Preview
-<ComponentPreview name="Checkbox" />
-
-
 ## Installation
 
-<ItemInstallationDoc name="Checkbox" />
+<ComponentInstallationDoc name="checkbox" />
 
 
 ## Usage
 
-```tsx title="MyCheckbox.tsx"
-import { createStyleSheet, useStyles } from 'react-native-unistyles';
+```tsx
+import { Checkbox, CheckboxIndicator } from '@/components/ui/checkbox';
+import { Text } from '@/components/ui/text';
 
-import { Checkbox, CheckboxIndicator } from '@/components/ui/Checkbox';
-import { Text } from '@/components/ui/Text';
-
-export function MyCheckbox() {
-  const { styles } = useStyles(stylesheet);
-
+export function CheckboxDemo() {
   return (
-    <Checkbox style={styles.checkbox}>
-      <CheckboxIndicator />
-      <Text variant="labelMd" highContrast>
-        I agree to the terms and conditions.
-      </Text>
+    <Checkbox>
+      <Checkbox.Indicator />
+      <Text variant="labelMd">I accept the terms and conditions</Text>
     </Checkbox>
   );
 }
-
-const stylesheet = createStyleSheet(theme => ({
-  checkbox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: theme.space[8],
-  },
-}))
 ```

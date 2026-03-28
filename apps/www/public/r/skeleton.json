@@ -1,0 +1,12 @@
+{
+  "$schema": "https://saaj-ui.vercel.app/schema/registry-item.json",
+  "name": "skeleton",
+  "type": "registry:ui",
+  "files": [
+    {
+      "path": "src/registry/ui/skeleton.tsx",
+      "content": "import React from 'react';\nimport { StyleSheet } from 'react-native-unistyles';\nimport Animated, {\n  Easing,\n  useAnimatedStyle,\n  withDelay,\n  withRepeat,\n  withSequence,\n  withTiming,\n} from 'react-native-reanimated';\nimport { DimensionValue } from 'react-native';\n\nimport { Radius } from '@/styles/tokens/radius';\n\nconst animConfig = {\n  duration: 800,\n  easing: Easing.inOut(Easing.ease),\n};\n\ntype SkeletonProps = React.ComponentPropsWithRef<typeof Animated.View> & {\n  /**\n   * Duration (in milliseconds) before the animation starts.\n   * @default 0\n   */\n  delayMs?: number;\n  /**\n   * Disable the opacity animation.\n   * Useful for static skeletons that do not require animation.\n   * @default false\n   */\n  disableAnimation?: boolean;\n  width?: DimensionValue;\n  height?: DimensionValue;\n  radius?: keyof Radius;\n};\n\nfunction Skeleton({\n  delayMs = 0,\n  disableAnimation = false,\n  width = '100%',\n  height = 48,\n  radius = 'md',\n  style,\n  ...restProps\n}: SkeletonProps) {\n  const animatedStyle = useAnimatedStyle(() => ({\n    opacity: disableAnimation\n      ? 1\n      : withDelay(\n          delayMs,\n          withRepeat(\n            withSequence(\n              withTiming(1, animConfig),\n              withTiming(0.4, animConfig),\n            ),\n            -1,\n            true,\n          ),\n        ),\n  }));\n\n  return (\n    <Animated.View\n      style={[\n        styles.container(radius),\n        {\n          width,\n          height,\n        },\n        animatedStyle,\n        style,\n      ]}\n      {...restProps}\n    />\n  );\n}\n\nconst styles = StyleSheet.create(({ colors, radius }) => ({\n  container: (radiusKey: keyof Radius) => ({\n    backgroundColor: colors.muted,\n    borderRadius: radius[radiusKey],\n    borderCurve: 'continuous',\n  }),\n}));\n\nexport { Skeleton };\nexport type { SkeletonProps };\n",
+      "type": "registry:ui"
+    }
+  ]
+}

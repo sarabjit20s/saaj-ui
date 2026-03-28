@@ -4,37 +4,23 @@ description: Profile picture, user initials or fallback icon.
 ---
 
 
-## Preview
-
-<ComponentPreview name="Avatar" />
-
-
 ## Installation
 
-<ItemInstallationDoc name="Avatar" />
+<ComponentInstallationDoc name="avatar" />
 
 
 ## Usage
 
-```tsx title="MyAvatar.tsx"
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-  AvatarProps,
-  AvatarText,
-} from '@/components/ui/Avatar';
-import { Text } from '@/components/ui/Text';
+```tsx
+import { Avatar } from '@/components/ui/avatar';
 
-export function MyAvatar() {
+export function AvatarDemo() {
   return (
     <Avatar>
-      <AvatarImage src="https://avatar.iran.liara.run/public?username=John+Doe" />
-      <AvatarFallback>
-        <AvatarText>
-          JD
-        </AvatarText>
-      </AvatarFallback>
+      <Avatar.Image src="https://avatar.iran.liara.run/public?username=John+Doe" />
+      <Avatar.Fallback>
+        <Avatar.Icon name="user" />
+      </Avatar.Fallback>
     </Avatar>
   );
 }
