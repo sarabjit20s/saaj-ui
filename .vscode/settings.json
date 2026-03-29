@@ -3,5 +3,6 @@
     {
       "mode": "auto"
     }
-  ]
+  ],
+  "typescript.preferences.importModuleSpecifier": "non-relative"
 }
