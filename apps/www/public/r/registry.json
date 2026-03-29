@@ -48,6 +48,17 @@
       ]
     },
     {
+      "name": "card",
+      "type": "registry:ui",
+      "registryDependencies": ["text"],
+      "files": [
+        {
+          "path": "src/registry/ui/card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "checkbox",
       "type": "registry:ui",
       "dependencies": ["react-native-svg"],
