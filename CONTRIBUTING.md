@@ -21,30 +21,28 @@ This repository is structured as follows:
 
 ```
 apps
-└── www
-    ├── app
-    ├── components
-    ├── content
+├── ui      # React Native components & demo
+└── www     # Documentation site
 packages
-└── react-native
+├── cli     # The CLI tool
+├── eslint-config
+└── typescript-config
 ```
 
-| Path                      | Description                              |
-| ------------------------- | ---------------------------------------- |
-| `apps/www/app`            | The Next.js application for the website. |
-| `apps/www/components`     | The React components for the website.    |
-| `apps/www/content`        | The content for the website.             |
-| `packages/react-native`   | The React Native components              |
-| `packages/registry`       | The registry of components               |
+| Path           | Description                                  |
+| -------------- | -------------------------------------------- |
+| `apps/ui`      | React Native components and playground app.  |
+| `apps/www`     | Documentation site (Next.js + Fumadocs).    |
+| `packages/cli` | The `saaj` CLI tool to add components.       |
 
 
-## Documentation
+## Local Development
 
-The documentation for this project is located in the `www` workspace. You can run the documentation locally by running the following command:
+You can run different parts of the monorepo locally using the following commands:
 
-```bash
-pnpm run dev --filter=www
-```
+- **Documentation**: `pnpm run dev --filter=www`
+- **UI Playground**: `pnpm run dev --filter=ui`
+- **CLI Development**: `pnpm run dev --filter=saaj`
 
 
 ## Commit Convention
@@ -53,3 +51,4 @@ Follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/
 
 ## Requests for new components
 If you have a request for a new component, please open a discussion on GitHub. We'll be happy to help you out.
+
